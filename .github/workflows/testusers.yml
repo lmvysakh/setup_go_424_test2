@@ -19,3 +19,5 @@ jobs:
         run: go version
       - name: Run app
         run: go run ./main.go
+
+        #second run
