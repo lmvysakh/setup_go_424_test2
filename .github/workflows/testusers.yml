@@ -1,0 +1,21 @@
+name: Go with user's workflow
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  setup-go:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: 'go.mod'
+      - name: go version
+        run: go version
+      - name: Run app
+        run: go run ./main.go

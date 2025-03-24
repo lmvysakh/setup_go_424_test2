@@ -1,1 +1,0 @@
-# setup_go_424_test2
