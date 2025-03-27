@@ -31,10 +31,10 @@ jobs:
       run: |
         # Ensure that the 'go' directive in go.mod matches the toolchain version
         go mod edit -go=${{ matrix.go-version }}
-        # Add the toolchain directive if it doesn't exist
-        if ! grep -q 'toolchain go${{ matrix.go-version }}' go.mod; then
-          echo "toolchain go${{ matrix.go-version }}" >> go.mod
-        fi
+        # Remove any existing toolchain directives
+        sed -i '/toolchain/d' go.mod
+        # Add the correct toolchain directive
+        echo "toolchain go${{ matrix.go-version }}" >> go.mod
 
     - name: Cache Go modules
       uses: actions/cache@v4
