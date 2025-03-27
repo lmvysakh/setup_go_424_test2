@@ -1,0 +1,53 @@
+name: Solution workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        go-version: [1.22.2]  # Set the Go version to match the toolchain version
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ matrix.go-version }}
+        cache: true
+
+    - name: Validate Go and Toolchain Versions
+      run: |
+        # Ensure that the 'go' directive in go.mod matches the toolchain version
+        go mod edit -go=${{ matrix.go-version }}
+        # Add the toolchain directive if it doesn't exist
+        if ! grep -q 'toolchain go${{ matrix.go-version }}' go.mod; then
+          echo "toolchain go${{ matrix.go-version }}" >> go.mod
+        fi
+
+    - name: Cache Go modules
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: go-mod-${{ matrix.go-version }}-toolchain-${{ matrix.go-version }}-${{ runner.os }}-${{ hashFiles('**/go.mod') }}
+        restore-keys: |
+          go-mod-${{ matrix.go-version }}-toolchain-${{ runner.os }}-${{ hashFiles('**/go.mod') }}
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -v ./...
