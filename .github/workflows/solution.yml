@@ -46,6 +46,9 @@ jobs:
         restore-keys: |
           go-mod-${{ matrix.go-version }}-toolchain-${{ runner.os }}-${{ hashFiles('**/go.mod') }}
 
+    - name: Run go mod tidy
+      run: go mod tidy
+
     - name: Build
       run: go build -v ./...
 
