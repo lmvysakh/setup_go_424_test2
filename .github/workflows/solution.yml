@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        go-version: [1.22.9]  # Set the Go version to match the toolchain version
+        go-version: [1.22.3]  # Set the Go version to match the toolchain version
 
     steps:
     - name: Checkout code
